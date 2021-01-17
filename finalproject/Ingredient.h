@@ -84,7 +84,7 @@ public:
 		return ing.getName() == getName();
 	}
 
-	void dataWriteToFileIngredient(string filename, string name, int count, double fat, double protein, double carbohydrates, int kcal, double price) {
+	/*void dataWriteToFileIngredient(string filename, string name, int count, double fat, double protein, double carbohydrates, int kcal, double price) {
 		ofstream fout(filename, ios_base::app);
 		if (fout.is_open())
 		{
@@ -96,13 +96,12 @@ public:
 			fout << "Kcal: " << kcal << endl;
 			fout << "Price: " << price << endl;
 			fout << "========================================================" << endl;
-
 		}
 		fout << "========================================================" << endl;
 		fout.close();
-	}
+	}*/
 
-	string getDataFromFileIngredient(const string& filename) {
+	/*string getDataFromFileIngredient(const string& filename) {
 		ifstream fin(filename, ios::in);
 		string result = "";
 		if (fin.is_open())
@@ -119,9 +118,10 @@ public:
 			throw string("This file: " + filename + " does not exists. Error time: " + __TIMESTAMP__);
 		}
 		return result;
-	}
+	}*/
 
 	virtual void show() {
+		cout << "=====================================" << endl;
 		cout << "ID: " << this->myID << endl;
 		cout << "Name: " << getName() << endl;
 		cout << "Count: " << getCount() << endl;
@@ -129,6 +129,12 @@ public:
 		cout << "Protein: " << getProtein() << endl;
 		cout << "Carbohydrates: " << getCarbohydrates() << endl;
 		cout << "Kcal: " << getKcal() << endl;
+		cout << "Price: " << getPrice() << endl;
+	}
+
+	void showIngredientForClient() {
+		cout << "=====================================" << endl;
+		cout << "Name: " << getName() << endl;
 		cout << "Price: " << getPrice() << endl;
 	}
 
@@ -346,13 +352,14 @@ public:
 	}
 };
 
-double overallPrice = 0;
+double finalPrice = 0;
 
 
 
 class Stock {
 	list<Ingredient> ingredients;
 	list<Ingredient> orderIngredient;
+	list<Ingredient> orderIngredientListForAdmin;
 public:
 	Stock() {
 		Mushroom mushroom("Mushroom", 100, 10, 50.2, 45, 32, 1.5, 1);
@@ -371,23 +378,42 @@ public:
 		ingredients.push_back(potato);
 	}
 
-	void writeIngredientsToFile() {
-		for (auto ingredient : ingredients) {
-			ingredient.getName();
-			ingredient.getCount();
-			ingredient.getFat();
-			ingredient.getProtein();
-			ingredient.getCarbohydrates();
-			ingredient.getKcal();
-			ingredient.getPrice();
-			ingredient.dataWriteToFileIngredient("Ingredients.txt", ingredient.getName(), ingredient.getCount(), ingredient.getFat(), ingredient.getProtein(), ingredient.getCarbohydrates(), ingredient.getKcal(), ingredient.getPrice());
-
+	void writeDataToFileIngredient() {
+		ofstream fout("Ingredient.txt", ios_base::out);
+		if (fout.is_open())
+		{
+			for (auto ingredient : ingredients) {
+				fout << "Name: " << ingredient.getName() << endl;
+				fout << "Count: " << ingredient.getCount() << endl;
+				fout << "Fat: " << ingredient.getFat() << endl;
+				fout << "Protein: " << ingredient.getProtein() << endl;
+				fout << "Carbohydrates: " << ingredient.getCarbohydrates() << endl;
+				fout << "Kcal: " << ingredient.getKcal() << endl;
+				fout << "Price: " << ingredient.getPrice() << endl;
+				fout << "========================================================" << endl;
+			}
 		}
+		fout << "========================================================" << endl;
+		fout.close();
 	}
-
-	void readIngredientFromFile() {
-		Ingredient ingredient;
-		cout << ingredient.getDataFromFileIngredient("Ingredients.txt");
+	string getDataFromFileIngredient(const string& filename) {
+		ifstream fin(filename, ios_base::in);
+		string result = "";
+		if (fin.is_open())
+		{
+			while (!fin.eof())
+			{
+				string value;
+				fin >> value;
+				result.append(value + " ");
+				
+			}
+		}
+		else
+		{
+			cout << "Error" << endl;
+		}
+		return result;
 	}
 
 	void increaseCount(int ID, int count) {
@@ -411,6 +437,7 @@ public:
 
 	void addIngredient(string name, int count, double fat, double protein, double carbohydrates, int kcal, double price) {
 		ingredients.push_back(Ingredient(name, count, fat, protein, carbohydrates, kcal, price));
+		writeDataToFileIngredient();
 	}
 	void deleteIngredientByID(int ID) {
 		Ingredient ingredient;
@@ -425,6 +452,7 @@ public:
 			}
 		}
 		ingredients.remove(ingredient);
+		writeDataToFileIngredient();
 	}
 	void deleteIngredientByName(string name) {
 		Ingredient ingredient;
@@ -439,9 +467,11 @@ public:
 			}
 		}
 		ingredients.remove(ingredient);
+		writeDataToFileIngredient();
 	}
 	void deleteAllIngredient() {
 		ingredients.clear();
+		writeDataToFileIngredient();
 	}
 
 	void addIngredientToOrder(int ID) {
@@ -453,10 +483,34 @@ public:
 			}
 		}
 		orderIngredient.push_back(ingredient);
+		orderIngredientListForAdmin.push_back(ingredient);
 		cout << ingredient.getName() << endl;
-		overallPrice += ingredient.getPrice();
-		cout << "Umumi qiymet: " << overallPrice;
+		finalPrice += ingredient.getPrice();
+		cout << "Ingredientlerin umumi qiymeti: " << finalPrice;
 		decreaseCount(ID);
+	}
+	void clearOrderIngredients() {
+		orderIngredient.clear();
+	}
+	void showOrderedIngredients() {
+		cout << "============Ingredientler============" << endl;
+		for (auto ingOrder : orderIngredient) {
+			ingOrder.showIngredientForClient();
+		}
+
+	}
+	void showOrderedIngredientsForAdmin() {
+		cout << "============Ingredientler============" << endl;
+		for (auto ingOrder : orderIngredientListForAdmin) {
+			ingOrder.show();
+		}
+	}
+	double showIngredientIncome() {
+		double ingredientIncome = 0;
+		for (auto ingOrder : orderIngredientListForAdmin) {
+			ingredientIncome = ingOrder.getPrice() + ingredientIncome;
+		}
+		return ingredientIncome;
 	}
 
 	void sortByName(string order) {
@@ -485,6 +539,12 @@ public:
 		for (auto ing : ingredients) {
 			ing.show();
 			cout << endl;
+		}
+	}
+
+	void nottForOrdersIngredient() {
+		for (auto order : orderIngredientListForAdmin) {
+			order.show();
 		}
 	}
 

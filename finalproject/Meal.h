@@ -46,7 +46,7 @@ public:
 		return rating;
 	}
 	void setRating(const double& rating) {
-		if (rating != 0) this->rating = rating;
+		if (rating > 0 && rating < 10) this->rating = rating;
 	}
 	double getPrice()const {
 		return price;
@@ -84,41 +84,6 @@ public:
 		return meal.getName() == getName();
 	}
 
-	void dataWriteToFileMeal(string filename, string name, string category, double rating, double price, double tax) {
-		ofstream fout(filename, ios_base::app);
-		if (fout.is_open())
-		{
-			fout << "Name: " << name << endl;
-			fout << "Category: " << category << endl;
-			fout << "Rating: " << rating << endl;
-			fout << "Price: $" << price << endl;
-			fout << "Tax: %" << tax << endl;
-			fout << "========================================================" << endl;
-
-		}
-		fout << "========================================================" << endl;
-		fout.close();
-	}
-
-	string getDataFromFileMeal(const string& filename) {
-		ifstream fin(filename, ios::in);
-		string result = "";
-		if (fin.is_open())
-		{
-			while (!fin.eof())
-			{
-				string value;
-				fin >> value;
-				result.append(value + " ");
-			}
-		}
-		else
-		{
-			throw string("This file: " + filename + " does not exists. Error time: " + __TIMESTAMP__);
-		}
-		return result;
-	}
-
 	virtual void showMeal() {
 		cout << "=====================================" << endl;
 		cout << "ID: " << this->myID << endl;
@@ -128,6 +93,8 @@ public:
 		cout << "Price: $" << getPrice() << endl;
 		cout << "Tax: %" << getTax() << endl;
 	}
+
+
 
 	~Meal() {}
 };
@@ -224,6 +191,7 @@ class Kitchen {
 	list<FastFood> fastFoods;
 	list<Dessert> desserts;
 	list<Meal> orders;
+	list<Meal> ordersForAdmin;
 	Stock stock;
 public:
 	Kitchen() {
@@ -274,26 +242,44 @@ public:
 		desserts.push_back(d4);
 	}
 
-	void writeMealsToFile() {
-		for (auto meal : meals) {
-			meal.getName();
-			meal.getCategory();
-			meal.getRating();
-			meal.getPrice();
-			meal.getTax();
-			meal.dataWriteToFileMeal("Meals.txt", meal.getName(), meal.getCategory(), meal.getRating(), meal.getPrice(), meal.getTax());
-
+	void writeDataToFileMeal() {
+		ofstream fout("Meal.txt", ios_base::out);
+		if (fout.is_open())
+		{
+			for (auto meal : meals) {
+				fout << "Name: " << meal.getName() << endl;
+				fout << "Category: " << meal.getCategory() << endl;
+				fout << "Rating: " << meal.getRating() << endl;
+				fout << "Price: " << meal.getPrice() << endl;
+				fout << "Tax: " << meal.getTax() << endl;
+				fout << "========================================================" << endl;
+			}
 		}
+		fout << "========================================================" << endl;
+		fout.close();
 	}
-
-	void readMealsFromFile() {
-		Meal meal;
-		cout << meal.getDataFromFileMeal("Meals.txt");
+	string getDataFromFileMeal(const string& filename) {
+		ifstream fin(filename, ios_base::in);
+		string result = "";
+		if (fin.is_open())
+		{
+			while (!fin.eof())
+			{
+				string value;
+				fin >> value;
+				result.append(value + " ");
+			}
+		}
+		else
+		{
+			cout << "Error" << endl;
+		}
+		return result;
 	}
-
 
 	void addMeal(string name, string category, double rating, double price, double tax) {
 		meals.push_back(Meal(name, category, rating, price, tax));
+		writeDataToFileMeal();
 	}
 	void deleteMealByName(string name) {
 		Meal meal;
@@ -304,6 +290,7 @@ public:
 			}
 		}
 		meals.remove(meal);
+		writeDataToFileMeal();
 	}
 	void deleteMealByID(int ID) {
 		Meal meal;
@@ -314,9 +301,11 @@ public:
 			}
 		}
 		meals.remove(meal);
+		writeDataToFileMeal();
 	}
 	void deleteAllMeals() {
 		meals.clear();
+		writeDataToFileMeal();
 	}
 	void updateMeal(int ID, string name, string category, double rating, double price, double tax) {
 		/*Meal meal;
@@ -342,6 +331,7 @@ public:
 				meal.setTax(tax);
 			}
 			});
+		writeDataToFileMeal();
 	}
 	double searchMeal(string name) {
 		Meal meal;
@@ -369,8 +359,8 @@ public:
 			}
 		}
 		orders.push_back(meal);
+		ordersForAdmin.push_back(meal);
 		meal.showMeal();
-
 	}
 
 	double getMealsPrice() {
@@ -389,6 +379,34 @@ public:
 				meal.setRating(prevRating + 0.3);
 			}
 			});
+		for_each(salads.begin(), salads.end(), [&](Salad& salad) {
+			if (salad.getID() == ID)
+			{
+				double prevRating = salad.getRating();
+				salad.setRating(prevRating + 0.3);
+			}
+			});
+		for_each(mainDishes.begin(), mainDishes.end(), [&](MainDish& mainDish) {
+			if (mainDish.getID() == ID)
+			{
+				double prevRating = mainDish.getRating();
+				mainDish.setRating(prevRating + 0.3);
+			}
+			});
+		for_each(fastFoods.begin(), fastFoods.end(), [&](FastFood& fastFood) {
+			if (fastFood.getID() == ID)
+			{
+				double prevRating = fastFood.getRating();
+				fastFood.setRating(prevRating + 0.3);
+			}
+			});
+		for_each(desserts.begin(), desserts.end(), [&](Dessert& dessert) {
+			if (dessert.getID() == ID)
+			{
+				double prevRating = dessert.getRating();
+				dessert.setRating(prevRating + 0.3);
+			}
+			});
 	}
 	void decreaseRating(int ID) {
 		for_each(meals.begin(), meals.end(), [&](Meal& meal) {
@@ -396,6 +414,34 @@ public:
 			{
 				double prevRating = meal.getRating();
 				meal.setRating(prevRating - 0.3);
+			}
+			});
+		for_each(salads.begin(), salads.end(), [&](Salad& salad) {
+			if (salad.getID() == ID)
+			{
+				double prevRating = salad.getRating();
+				salad.setRating(prevRating - 0.3);
+			}
+			});
+		for_each(mainDishes.begin(), mainDishes.end(), [&](MainDish& mainDish) {
+			if (mainDish.getID() == ID)
+			{
+				double prevRating = mainDish.getRating();
+				mainDish.setRating(prevRating - 0.3);
+			}
+			});
+		for_each(fastFoods.begin(), fastFoods.end(), [&](FastFood& fastFood) {
+			if (fastFood.getID() == ID)
+			{
+				double prevRating = fastFood.getRating();
+				fastFood.setRating(prevRating - 0.3);
+			}
+			});
+		for_each(desserts.begin(), desserts.end(), [&](Dessert& dessert) {
+			if (dessert.getID() == ID)
+			{
+				double prevRating = dessert.getRating();
+				dessert.setRating(prevRating - 0.3);
 			}
 			});
 	}
@@ -482,14 +528,11 @@ public:
 		desserts.sort(byTaxMeal(order));
 	}
 
-
-
 	void show() {
 		for (auto meal : meals) {
 			meal.showMeal();
 		}
 	}
-
 
 	void showByCategorySalad() {
 		for (auto salad : salads) {
@@ -513,14 +556,24 @@ public:
 	}
 
 	void showOrders() {
+		cout << "============Yemekler============" << endl;
 		for (auto order : orders) {
 			order.showMeal();
 		}
-	}
 
+	}
+	void clearOrders() {
+		orders.clear();
+	}
+	void showOrdersForAdmin() {
+		cout << "============Yemekler============" << endl;
+		for (auto order : ordersForAdmin) {
+			order.showMeal();
+		}
+	}
 	double showIncome() {
 		double income = 0;
-		for (auto order : orders) {
+		for (auto order : ordersForAdmin) {
 			income = order.getPrice() + income;
 		}
 		return income;
@@ -528,6 +581,12 @@ public:
 
 	void showStock() {
 		stock.show();
+	}
+
+	void nottForOrdersMeal() {
+		for (auto order : ordersForAdmin) {
+			order.showMeal();
+		}
 	}
 
 };

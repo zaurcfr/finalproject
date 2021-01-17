@@ -1,0 +1,57 @@
+Name: Mushroom
+Count: 100
+Fat: 10
+Protein: 50.2
+Carbohydrates: 45
+Kcal: 32
+Price: 1.5
+========================================================
+Name: Meat
+Count: 20
+Fat: 42
+Protein: 50
+Carbohydrates: 13
+Kcal: 194
+Price: 3
+========================================================
+Name: Chicken
+Count: 50
+Fat: 32
+Protein: 45
+Carbohydrates: 18
+Kcal: 150
+Price: 2
+========================================================
+Name: Spice
+Count: 150
+Fat: 23
+Protein: 15
+Carbohydrates: 53
+Kcal: 14
+Price: 0.5
+========================================================
+Name: Cheese
+Count: 70
+Fat: 35
+Protein: 27
+Carbohydrates: 65
+Kcal: 28
+Price: 0.75
+========================================================
+Name: Tomato
+Count: 120
+Fat: 22
+Protein: 40
+Carbohydrates: 43
+Kcal: 54
+Price: 0.5
+========================================================
+Name: Potato
+Count: 80
+Fat: 15
+Protein: 20
+Carbohydrates: 30
+Kcal: 25
+Price: 0.8
+========================================================
+========================================================

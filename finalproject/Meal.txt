@@ -1,0 +1,91 @@
+Name: Caesar
+Category: Salad
+Rating: 6.9
+Price: 8
+Tax: 5
+========================================================
+Name: Chicken salad
+Category: Salad
+Rating: 7.9
+Price: 3
+Tax: 5
+========================================================
+Name: Crab salad
+Category: Salad
+Rating: 8.4
+Price: 5
+Tax: 5
+========================================================
+Name: Beef Wellington
+Category: Main dish
+Rating: 8.7
+Price: 20
+Tax: 5
+========================================================
+Name: Spaghetti
+Category: Main dish
+Rating: 9
+Price: 7
+Tax: 5
+========================================================
+Name: Nachos
+Category: Main dish
+Rating: 9.1
+Price: 12
+Tax: 5
+========================================================
+Name: Ribeye Steak
+Category: Main dish
+Rating: 9.3
+Price: 18
+Tax: 5
+========================================================
+Name: Pizza
+Category: Fast Food
+Rating: 9.2
+Price: 12
+Tax: 5
+========================================================
+Name: Burger
+Category: Fast Food
+Rating: 8.5
+Price: 6
+Tax: 5
+========================================================
+Name: CheeseBurger
+Category: Fast Food
+Rating: 9.2
+Price: 7.5
+Tax: 5
+========================================================
+Name: Marco's Special Burger
+Category: Fast Food
+Rating: 9.2
+Price: 9
+Tax: 5
+========================================================
+Name: Cheesecake
+Category: Dessert
+Rating: 8.8
+Price: 3
+Tax: 5
+========================================================
+Name: Croissant
+Category: Dessert
+Rating: 7.8
+Price: 2
+Tax: 5
+========================================================
+Name: Donut
+Category: Dessert
+Rating: 9.3
+Price: 1.5
+Tax: 5
+========================================================
+Name: Banana Split
+Category: Dessert
+Rating: 9.5
+Price: 3
+Tax: 5
+========================================================
+========================================================
